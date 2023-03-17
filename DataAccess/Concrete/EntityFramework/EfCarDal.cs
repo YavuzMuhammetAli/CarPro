@@ -1,5 +1,7 @@
-﻿using DataAccess.Abstract;
+﻿using Core.DataAccess.EntityFramework;
+using DataAccess.Abstract;
 using Entities.Concrete;
+using Entities.DTOs;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -10,58 +12,19 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Concrete.EntityFramework
 {
-    public class EfCarDal : ICarDal
+    public class EfCarDal : EfEntityRepositoryBase<Car, ArabaContext>, ICarDal
     {
-        public void Add(Car entity)
+        public List<CarDetailDto> GetCarDetails()
         {
-            if (entity.Aciklama.Length < 2 && entity.DailyPrice < 1)
+            using (ArabaContext context= new ArabaContext())
             {
-                Console.WriteLine("Araba adı 2 karakterden fazla olamlı");
-            }
-            else
-            {
-                using (ArabaContext context = new ArabaContext())
-                {
-                    var addedEntity = context.Entry(entity);
-                    addedEntity.State = EntityState.Added;
-                    context.SaveChanges();
-                }
-            }
-        }
-
-        public void Delete(Car entity)
-        {
-            using (ArabaContext context = new ArabaContext())
-            {
-                var deletedEntity = context.Entry(entity);
-                deletedEntity.State = EntityState.Deleted;
-                context.SaveChanges();
-            }
-        }
-
-        public Car Get(Expression<Func<Car, bool>> filter)
-        {
-            using (ArabaContext context = new ArabaContext())
-            {
-                return context.Set<Car>().SingleOrDefault(filter);
-            }
-        }
-
-        public List<Car> GetAll(Expression<Func<Car, bool>> filter = null)
-        {
-            using (ArabaContext context = new ArabaContext())
-            {
-                return filter == null ? context.Set<Car>().ToList() : context.Set<Car>().Where(filter).ToList();
-            }
-        }
-
-        public void Update(Car entity)
-        {
-            using (ArabaContext context = new ArabaContext())
-            {
-                var updatedEntity = context.Entry(entity);
-                updatedEntity.State = EntityState.Modified;
-                context.SaveChanges();
+                var result = from x in context.Car
+                             join y in context.Brand
+                             on x.BrandId equals y.Id
+                             join z in context.Color
+                             on x.ColorId equals z.Id
+                             select new CarDetailDto { Id = x.Id, CarName=x.Aciklama, BrandName = y.isim, ColorName = z.isim };
+                return result.ToList();
             }
         }
     }
