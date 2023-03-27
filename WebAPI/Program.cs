@@ -1,7 +1,6 @@
-using Business.Abstract;
-using Business.Concrete;
-using DataAccess.Abstract;
-using DataAccess.Concrete.EntityFramework;
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
+using Business.DependencyResolvers.Autofac;
 
 namespace WebAPI
 {
@@ -10,18 +9,12 @@ namespace WebAPI
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            builder.Services.AddSingleton<ICarService, CarManager>();
-            builder.Services.AddSingleton<ICarDal, EfCarDal>();
-            builder.Services.AddSingleton<IBrandService, BrandManager>();
-            builder.Services.AddSingleton<IBrandDal, EfBrandDal>();
-            builder.Services.AddSingleton<IColorService, ColorManager>();
-            builder.Services.AddSingleton<IColorDal, EfColorDal>();
-            builder.Services.AddSingleton<ICustomersService, CustomersManager>();
-            builder.Services.AddSingleton<ICustomersDal, EfCustomersDal>();
-            builder.Services.AddSingleton<IRentalsService, RentalsManager>();
-            builder.Services.AddSingleton<IRentalsDal, EfRentalsDal>();
-            builder.Services.AddSingleton<IUsersService, UsersManager>();
-            builder.Services.AddSingleton<IUsersDal, EfUsersDal>();
+            builder.Host
+                .UseServiceProviderFactory(new AutofacServiceProviderFactory())
+                .ConfigureContainer<ContainerBuilder>(builder =>
+                {
+                    builder.RegisterModule(new AutofacBusinessModule());
+                });
 
             // Add services to the container.
 

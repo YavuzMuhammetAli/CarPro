@@ -26,5 +26,6 @@ namespace Business.Constants
         public static string RentalsNotAdded = "Araba kiralanmadı";
         public static string ErrorDeleted = "Silme işlemi başarısız";
         public static string ErrorUpdated = "Güncelleme işlemi başarısız";
+        internal static string Images;
     }
 }
