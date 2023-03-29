@@ -36,6 +36,7 @@ namespace Business.Concrete
 
         public IDataResult<List<CarImages>> GetAll()
         {
+            BusinessRules.Run(ChecekIfCarImagesNull());
             if (_carImagesDal.GetAll().Count == 0)
             {
                 return new ErrorDataResult<List<CarImages>>();
@@ -65,6 +66,15 @@ namespace Business.Concrete
                 return new ErrorResult();
             }
             return new SuccessResult();
+        }
+        private IResult ChecekIfCarImagesNull()
+        {
+            var result = _carImagesDal.GetAll().Count;
+            if (result > 0)
+            {
+                return new SuccessResult();
+            }
+            return new ErrorResult();
         }
     }
 }
