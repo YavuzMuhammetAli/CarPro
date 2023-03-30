@@ -15,4 +15,8 @@
     <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="7.0.4" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Aspects\Autofac\Caching\" />
+  </ItemGroup>
+
 </Project>

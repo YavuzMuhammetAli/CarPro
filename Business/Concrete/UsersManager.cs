@@ -3,12 +3,6 @@ using Business.Constants;
 using Core.Entities.Concrete;
 using Core.Utilities.Result;
 using DataAccess.Abstract;
-using Entities.Concrete;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Business.Concrete
 {
@@ -33,7 +27,17 @@ namespace Business.Concrete
 
         public IDataResult<List<User>> GetAll()
         {
-            return new SuccessDataResult<List<User>>(_users.GetAll());
+            return new SuccessDataResult<List<User>>(_users.GetAll(), "kullanıcılar listelendi");
+        }
+
+        public IDataResult<User> GetByMail(string email)
+        {
+            return new SuccessDataResult<User>(_users.Get(u=> u.Email == email), "maile göre kullanıcı geldi");
+        }
+
+        public IDataResult<List<OperationClaim>> GetClaims(User user)
+        {
+            return new SuccessDataResult<List<OperationClaim>>(_users.GetClaims(user),"claimsler geldi");
         }
 
         public IResult Update(User user)
